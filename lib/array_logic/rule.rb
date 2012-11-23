@@ -1,5 +1,4 @@
 
-
 class Rule
   attr_accessor :rule
   attr_reader :things
@@ -15,15 +14,7 @@ class Rule
   end
   
   def logic
-    case operators.uniq
-    when ['and']
-      thing_ids & rule_things_only == rule_things_only
-    when ['or']
-      thing_ids & rule_things_only != []
-    else
-      false
-    end
-    
+    eval(expression)  
   end
   
   def rule_valid?
@@ -43,13 +34,24 @@ class Rule
     rule_components.collect{|c| c =~ /^\w\d+$/ ? c[/\d+/].to_i : c }
   end
   
-  def rule_things_only
-    rule_components_with_things.collect{|c| c if c.kind_of?(Numeric)}.compact
+  def rule_components_as_logic_elements
+    rule_components_with_things.collect do |component|
+      if component.kind_of?(Integer)
+        thing_ids.include?(component).to_s
+      elsif component == 'and'
+        '&&'
+      elsif component == 'or'
+        '||'
+      else
+        component
+      end 
+    end
   end
   
-  def operators
-    rule_components_with_things - rule_things_only
+  def expression
+    rule_components_as_logic_elements.join(' ')
   end
+  
   
   def check_rule
     raise "You must define a rule before trying to match" unless rule_valid?
