@@ -42,6 +42,8 @@ class Rule
         '&&'
       elsif component == 'or'
         '||'
+      elsif component == 'not'
+        '!'
       else
         component
       end 

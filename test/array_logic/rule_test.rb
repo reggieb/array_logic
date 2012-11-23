@@ -54,6 +54,15 @@ module ArrayLogic
       assert_thing_match([1, 2, 3], @rule)
       assert_thing_match([2, 3], @rule)
       assert_no_thing_match([3], @rule)      
+    end
+
+    def test_one_or_one_and_not
+      @rule.rule = 't1 or ( t2 and not t3 )'
+      assert_thing_match([1, 3], @rule)
+      assert_thing_match([1, 2, 3], @rule)
+      assert_no_thing_match([2, 3], @rule)
+      assert_thing_match([2], @rule) 
+      assert_thing_match([2, 4], @rule) 
     end    
     
     def test_match_without_rule
