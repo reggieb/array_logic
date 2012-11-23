@@ -15,7 +15,15 @@ class Rule
   end
   
   def logic
-    thing_ids & rule_things_only == rule_things_only
+    case operators.first
+    when 'and'
+      thing_ids & rule_things_only == rule_things_only
+    when 'or'
+      thing_ids & rule_things_only != []
+    else
+      false
+    end
+    
   end
   
   def rule_valid?
@@ -37,6 +45,10 @@ class Rule
   
   def rule_things_only
     rule_components_with_things.collect{|c| c if c.kind_of?(Numeric)}.compact
+  end
+  
+  def operators
+    rule_components_with_things - rule_things_only
   end
   
   def check_rule

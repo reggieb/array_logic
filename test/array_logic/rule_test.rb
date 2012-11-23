@@ -13,6 +13,15 @@ module ArrayLogic
       assert_thing_match([1, 2], @rule)
       assert_thing_match([1, 2, 3], @rule)
       assert_no_thing_match([2, 3], @rule)
+      assert_no_thing_match([3], @rule)
+    end
+    
+    def test_simple_or
+      @rule.rule = 't1 or t2'
+      assert_thing_match([1, 2], @rule)
+      assert_thing_match([1, 2, 3], @rule)
+      assert_thing_match([2, 3], @rule)
+      assert_no_thing_match([3], @rule)      
     end
     
     def test_match_without_rule
