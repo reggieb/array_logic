@@ -1,6 +1,6 @@
-# Basic object used in testing 
-
 module ArrayLogic
+  
+  # Basic object used in testing 
   class Thing
     attr_accessor :id
     
@@ -9,7 +9,9 @@ module ArrayLogic
     end
     
     def self.make(number)
-      (1..number).to_a.collect{|n| new(n)}
+      things = Hash.new
+      (1..number).each{|n| things[n] = new(n)}
+      return things
     end
   end
 end
