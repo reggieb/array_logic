@@ -7,7 +7,7 @@ I think the logic should look like this:
 
     a1 = Answer.find(1)
     a2 = Answer.find(2)
-
+      ....
     an = Answer.find(n)
 
     rule_set_one.rule = "(a1 and a2) or (a3 and a4)"
