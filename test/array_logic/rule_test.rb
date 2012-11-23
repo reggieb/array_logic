@@ -24,6 +24,22 @@ module ArrayLogic
       assert_no_thing_match([3], @rule)      
     end
     
+    def test_multiple_and
+      @rule.rule = 't1 and t2 and t3'
+      assert_no_thing_match([1, 2], @rule)
+      assert_thing_match([1, 2, 3], @rule)
+      assert_no_thing_match([2, 3], @rule)
+      assert_no_thing_match([3], @rule)
+    end
+    
+    def test_multiple_or
+      @rule.rule = 't1 or t2 or t3'
+      assert_thing_match([1, 2], @rule)
+      assert_thing_match([1, 2, 3], @rule)
+      assert_thing_match([3], @rule)
+      assert_no_thing_match([4], @rule)
+    end
+    
     def test_match_without_rule
       assert_raises RuntimeError do
         @rule.match([1, 2])

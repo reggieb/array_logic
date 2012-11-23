@@ -15,10 +15,10 @@ class Rule
   end
   
   def logic
-    case operators.first
-    when 'and'
+    case operators.uniq
+    when ['and']
       thing_ids & rule_things_only == rule_things_only
-    when 'or'
+    when ['or']
       thing_ids & rule_things_only != []
     else
       false
