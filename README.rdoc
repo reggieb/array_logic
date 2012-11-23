@@ -1,0 +1,30 @@
+== array_logic
+
+I want to build a system that allows me to define the logic for comparing arrays.
+
+I think the logic should look like this:
+
+
+    a1 = Answer.find(1)
+    a2 = Answer.find(2)
+
+    an = Answer.find(n)
+
+    rule_set_one.rule = "(a1 and a2) or (a3 and a4)"
+
+    rule_set_two.rule = "a1 and not a2"
+
+    rule_set_three.rule = "2 in a1 a2 a3"
+
+    rule_set_four.rule = "(2 in a1 a2 a3) and (1 in a4 a5)"
+
+
+                 rule_set_one  rule_set_two  rule_set_three  rule_set_four
+    [a1, a2]     true          false         true            false
+    [a3, a4]     true          false         false           false
+    [a1, a3, a5] false         true          true            true
+
+I should be able to check for matches like this:
+
+    rule_set_two.match([a1, a2]) --> false
+    rule_set_two.matches([a1, a2], [a1]) --> [[a1]]
