@@ -74,6 +74,62 @@ module ArrayLogic
       assert_no_thing_match([3], @rule)      
     end
     
+    def test_one_in_three
+      @rule.rule = '1 in t1, t2, t3'
+      assert_thing_match([1, 2], @rule)
+      assert_thing_match([1, 2, 3], @rule)
+      assert_thing_match([3], @rule)
+      assert_no_thing_match([4], @rule)       
+    end
+    
+    def test_one_in_three_no_commas
+      @rule.rule = '1 in t1 t2 t3'
+      assert_thing_match([1, 2], @rule)
+      assert_thing_match([1, 2, 3], @rule)
+      assert_thing_match([3], @rule)
+      assert_no_thing_match([4], @rule)       
+    end
+    
+    def test_one_in_three_with_and
+      @rule.rule = '(1 in t1, t2, t3) and t3'
+      assert_no_thing_match([1, 2], @rule)
+      assert_thing_match([1, 2, 3], @rule)
+      assert_thing_match([3], @rule)
+      assert_no_thing_match([4], @rule)       
+    end  
+    
+    def test_one_in_three_with_and_without_brackets
+      @rule.rule = '1 in t1, t2, t3 and t3'
+      assert_no_thing_match([1, 2], @rule)
+      assert_thing_match([1, 2, 3], @rule)
+      assert_thing_match([3], @rule)
+      assert_no_thing_match([4], @rule)       
+    end 
+
+    def test_one_in_three_with_and_without_brackets_and_commas
+      @rule.rule = '1 in t1 t2 t3 and t3'
+      assert_no_thing_match([1, 2], @rule)
+      assert_thing_match([1, 2, 3], @rule)
+      assert_thing_match([3], @rule)
+      assert_no_thing_match([4], @rule)       
+    end
+    
+    def test_2_in_with_and_at_start
+      @rule.rule = 't1 and t2 and 2 in t2 t3 t4'
+      assert_no_thing_match([1, 2], @rule)
+      assert_thing_match([1, 2, 3], @rule)
+      assert_thing_match([1, 2, 4], @rule)
+      assert_no_thing_match([2, 3, 4], @rule)        
+    end
+    
+    def test_in_within_logic_string
+      @rule.rule = '(t1 and 1 in t2 t3) or t4'
+      assert_thing_match([1, 2], @rule)
+      assert_thing_match([1, 2, 3], @rule)
+      assert_no_thing_match([3], @rule)
+      assert_thing_match([4], @rule) 
+    end
+    
     def test_match_without_rule
       assert_raises RuntimeError do
         @rule.match([1, 2])
