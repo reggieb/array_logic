@@ -10,7 +10,7 @@ class Rule
   def match(things)
     check_rule
     @things = things
-    logic
+    result = logic
   end
   
   def logic
@@ -21,39 +21,51 @@ class Rule
     rule.kind_of? String
   end
   
+  def replace_item(pattern, processor)
+    @processed_rule = processed_rule.gsub(pattern) {|x| processor.call(x)}
+  end
+  
   private
   def thing_ids
     things.collect(&:id)
   end
   
-  def rule_components
-    rule.split
-  end
-  
-  def rule_components_with_things
-    rule_components.collect{|c| c =~ /^\w\d+$/ ? c[/\d+/].to_i : c }
-  end
-  
-  def rule_components_as_logic_elements
-    rule_components_with_things.collect do |component|
-      if component.kind_of?(Integer)
-        thing_ids.include?(component).to_s
-      elsif component == 'and'
-        '&&'
-      elsif component == 'or'
-        '||'
-      elsif component == 'not'
-        '!'
-      else
-        component
-      end 
-    end
-  end
-  
   def expression
-    rule_components_as_logic_elements.join(' ')
+    
+    add_space_around_puctuation_characters
+    
+    replace_item(thing_id_pattern, true_or_false_for_thing_id_in_thing_ids)
+
+    final_processed_rule
+    
   end
   
+  # examples: a1, a2, a33, t1
+  def thing_id_pattern
+    /\w\d+/
+  end
+  
+  def true_or_false_for_thing_id_in_thing_ids
+    lambda {|s| thing_ids.include?(s[/\d+/].to_i)}
+  end
+  
+  def processed_rule
+    @processed_rule ||= rule.clone
+  end
+
+  def add_space_around_puctuation_characters
+    @processed_rule = processed_rule.gsub(/([[:punct:]])/, ' \1 ')
+  end
+  
+  def final_processed_rule
+    result = processed_rule.clone
+    reset_processed_rule_ready_for_next_comparison
+    return result
+  end
+  
+  def reset_processed_rule_ready_for_next_comparison
+    @processed_rule = nil
+  end
   
   def check_rule
     raise "You must define a rule before trying to match" unless rule_valid?

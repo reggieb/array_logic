@@ -64,7 +64,15 @@ module ArrayLogic
       assert_no_thing_match([2, 3], @rule)
       assert_thing_match([2], @rule) 
       assert_thing_match([2, 4], @rule) 
-    end    
+    end 
+    
+    def test_one_or_one_and_with_no_space_between_tn_and_bracket
+      @rule.rule = 't1 or (t2 and t3)'
+      assert_thing_match([1, 2], @rule)
+      assert_thing_match([1, 2, 3], @rule)
+      assert_thing_match([2, 3], @rule)
+      assert_no_thing_match([3], @rule)      
+    end
     
     def test_match_without_rule
       assert_raises RuntimeError do
@@ -77,6 +85,13 @@ module ArrayLogic
       assert_raises RuntimeError do
         @rule.match([1, 2])
       end
+    end
+
+    def test_replace_item
+      @rule.rule = 't1 or ( t2 and t3 )'
+      process = lambda {|s| [1, 2].include?(s[/\d+/].to_i)}
+      result = @rule.replace_item(/\w\d+/, process)
+      assert_equal('true or ( true and false )', result)
     end
     
   end
