@@ -1,5 +1,6 @@
 require 'test/unit'
 require_relative '../../lib/array_logic'
+require_relative 'test_case'
 
 module ArrayLogic
   class RuleTest < TestCase
