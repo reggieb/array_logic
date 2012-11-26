@@ -180,5 +180,35 @@ module ArrayLogic
       end
     end
     
+    def test_matches
+      @rule.rule = 't1 and t2'
+      t1 = Thing.new(1)
+      t2 = Thing.new(2)
+      t3 = Thing.new(3)
+      match_one = [t1, t2]
+      match_two = [t1, t2, t3]
+      no_match_one = [t2, t3]
+      no_match_two = [t3]
+      
+      result = @rule.matches(match_one, match_two, no_match_one, no_match_two)
+      expected = [match_one, match_two]
+      assert_equal(expected, result)
+    end
+    
+    def test_matches_with_or
+      @rule.rule = 't1 or t2'
+      t1 = Thing.new(1)
+      t2 = Thing.new(2)
+      t3 = Thing.new(3)
+      match_one = [t1, t2]
+      match_two = [t1, t2, t3]
+      match_three = [t2, t3]
+      no_match_two = [t3]
+      
+      result = @rule.matches(match_one, match_two, match_three, no_match_two)
+      expected = [match_one, match_two, match_three]
+      assert_equal(expected, result)
+    end
+    
   end
 end

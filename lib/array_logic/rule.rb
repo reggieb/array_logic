@@ -7,6 +7,10 @@ class Rule
     
   end
   
+  def matches(*array_of_things)
+    array_of_things.delete_if{|things| !match(things)}
+  end
+  
   def match(things)
     rule_valid?
     @things = things
