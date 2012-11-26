@@ -130,15 +130,31 @@ module ArrayLogic
       assert_thing_match([4], @rule) 
     end
     
+    def test_uppercase_in_within_logic_string
+      @rule.rule = '(t1 AND 1 IN t2 t3) OR t4'
+      assert_thing_match([1, 2], @rule)
+      assert_thing_match([1, 2, 3], @rule)
+      assert_no_thing_match([3], @rule)
+      assert_thing_match([4], @rule) 
+    end
+    
+    def test_operators_in_within_logic_string
+      @rule.rule = '(t1 && 1 in t2 t3) || t4'
+      assert_thing_match([1, 2], @rule)
+      assert_thing_match([1, 2, 3], @rule)
+      assert_no_thing_match([3], @rule)
+      assert_thing_match([4], @rule) 
+    end    
+    
     def test_match_without_rule
-      assert_raises RuntimeError do
+      assert_raise RuntimeError do
         @rule.match([1, 2])
       end
     end
     
     def test_match_with_number_rule
       @rule.rule = 1
-      assert_raises RuntimeError do
+      assert_raise RuntimeError do
         @rule.match([1, 2])
       end
     end
@@ -148,6 +164,20 @@ module ArrayLogic
       process = lambda {|s| [1, 2].include?(s[/\d+/].to_i)}
       result = @rule.replace_item(/\w\d+/, process)
       assert_equal('true or ( true and false )', result)
+    end
+    
+    def test_invalid_input
+      @rule.rule = 'invalid'
+      assert_raise RuntimeError do
+        @rule.match([1])
+      end
+    end
+    
+    def test_another_invalid_input
+      @rule.rule = 'a1 and User.delete_all'
+      assert_raise RuntimeError do
+        @rule.match([1])
+      end
     end
     
   end

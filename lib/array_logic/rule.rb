@@ -8,7 +8,7 @@ class Rule
   end
   
   def match(things)
-    check_rule
+    rule_valid?
     @things = things
     logic
   end
@@ -18,7 +18,8 @@ class Rule
   end
   
   def rule_valid?
-    rule.kind_of? String
+    check_rule_entered
+    check_allowed_characters
   end
   
   def replace_item(pattern, processor)
@@ -31,16 +32,16 @@ class Rule
   end
   
   def expression
-    prepare_rule
     rule_processing_steps
     return final_processed_rule
   end
   
-  def prepare_rule
-    add_space_around_puctuation_characters
-  end
+
   
   def rule_processing_steps
+    add_space_around_puctuation_characters
+    make_everything_lower_case
+    replace_logic_words_with_operators
     replace_item(thing_id_pattern, true_or_false_for_thing_id_in_thing_ids)
     replace_item(number_in_set_pattern, comparison_of_number_with_true_count)
   end
@@ -71,11 +72,23 @@ class Rule
   end
 
   def add_space_around_puctuation_characters
-    @processed_rule = processed_rule.gsub(/([[:punct:]])/, ' \1 ')
+    @processed_rule = processed_rule.gsub(/(\)|\)|\,)/, ' \1 ')
   end
   
+  def make_everything_lower_case
+    @processed_rule = processed_rule.downcase
+  end
+
+  def replace_logic_words_with_operators
+    {
+      'and' => '&&',
+      'or' => '||',
+      'not' => '!'
+    }.each{|word, operator| @processed_rule = processed_rule.gsub(Regexp.new(word), operator)}
+  end  
+  
   def final_processed_rule
-    puts result = processed_rule.clone
+    result = processed_rule.clone
     reset_processed_rule_ready_for_next_comparison
     return result
   end
@@ -84,8 +97,34 @@ class Rule
     @processed_rule = nil
   end
   
-  def check_rule
-    raise "You must define a rule before trying to match" unless rule_valid?
+  def check_rule_entered
+    raise "You must define a rule before trying to match" unless rule.kind_of? String
+  end
+  
+  def check_allowed_characters
+    raise_invalid_charachers unless allowed_charachers_pattern =~ rule
+  end
+  
+  def allowed_charachers_pattern
+    case_insensitive = true
+    Regexp.new("^(#{allowed_characters.join('|')})*$", case_insensitive)
+  end
+  
+  def allowed_characters
+    brackets = ['\(', '\)']
+    in_pattern = ['\d+\s+in']
+    ids = ['\w\d+']
+    logic_words = %w{and or not}
+    logic_chrs = ['&&', '\|\|', '!']
+    commas = ['\,']
+    white_space = ['\s']
+    
+    [brackets, in_pattern, ids, logic_words, logic_chrs, commas, white_space].flatten
+  end
+  
+  def raise_invalid_charachers
+    invalid = rule.split.collect{|s| (allowed_charachers_pattern =~ s) ? nil : s }.compact
+    raise "The rule '#{rule}' is not valid. The problem is within '#{invalid.join(' ')}'"
   end
   
 end
