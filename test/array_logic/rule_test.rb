@@ -222,5 +222,10 @@ module ArrayLogic
       assert_equal([], @rule.matches([things.first], [things.last]))
     end
     
+    def test_object_ids_used
+      @rule.rule = '(t1 && 1 in t2 t3) || t4'
+      assert_equal([1, 2, 3, 4], @rule.object_ids_used)
+    end
+    
   end
 end

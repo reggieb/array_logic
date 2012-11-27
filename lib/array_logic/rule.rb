@@ -29,8 +29,17 @@ module ArrayLogic
     def replace_item(pattern, processor)
       @processed_rule = processed_rule.gsub(pattern) {|x| processor.call(x)}
     end
+    
+    def object_ids_used
+      chrs_after_first = 1..-1
+      objects_identifiers_in_rule.collect{|i| i[chrs_after_first].to_i}
+    end
 
     private
+    def objects_identifiers_in_rule
+      rule_without_punctuation.split.delete_if{|x| !(thing_id_pattern =~ x)}
+    end
+    
     def thing_ids
       things.collect(&:id)
     end
@@ -97,6 +106,10 @@ module ArrayLogic
 
     def reset_processed_rule_ready_for_next_comparison
       @processed_rule = nil
+    end
+    
+    def rule_without_punctuation
+      rule.gsub(/[[:punct:]]/, '')
     end
 
     def check_rule_entered
