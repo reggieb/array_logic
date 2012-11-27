@@ -213,7 +213,7 @@ module ArrayLogic
     def test_match_with_empty_rule
       @rule.rule = ""
       things = get_things([1, 2])
-      assert(!@rule.match(things.first), "Should be no match when rule empty")
+      assert(!@rule.match([things.first]), "Should be no match when rule empty")
     end
     
     def test_matches_with_empty_rule

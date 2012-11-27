@@ -1,7 +1,7 @@
 module ArrayLogic
   class Rule
     attr_accessor :rule
-    attr_reader :things
+    attr_reader :things, :thing_ids
 
     def initialize
 
@@ -14,6 +14,7 @@ module ArrayLogic
     def match(things)
       rule_valid?
       @things = things
+      @thing_ids = things.collect(&:id)
       logic
     end
 
@@ -40,10 +41,6 @@ module ArrayLogic
       rule_without_punctuation.split.delete_if{|x| !(thing_id_pattern =~ x)}
     end
     
-    def thing_ids
-      things.collect(&:id)
-    end
-
     def expression
       rule_processing_steps
       return final_processed_rule
