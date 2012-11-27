@@ -49,7 +49,7 @@ module ArrayLogic
       assert_no_thing_match([3], @rule)      
     end
     
-    def test_one_or_one_and
+    def test_one_or_one_and_version_two
       @rule.rule = '( t1 or t2 ) and t3'
       assert_no_thing_match([1, 2], @rule)
       assert_thing_match([1, 2, 3], @rule)
