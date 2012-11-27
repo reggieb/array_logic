@@ -35,8 +35,29 @@ module ArrayLogic
       chrs_after_first = 1..-1
       objects_identifiers_in_rule.collect{|i| i[chrs_after_first].to_i}
     end
+    
+    def combinations_that_match
+      combinations_of_identifiers_in_rule.delete_if{|ids| ! match_ids(ids)}
+    end
+    
+    def combinations_that_do_not_match
+      combinations_of_identifiers_in_rule.delete_if{|ids| match_ids(ids)}
+    end
 
     private
+    def match_ids(ids)
+      rule_valid?
+      @thing_ids = ids
+      logic
+    end
+    
+    def combinations_of_identifiers_in_rule
+      ids = object_ids_used
+      combinations = Array.new
+      (1..ids.length).each{|n| ids.combination(n).each{|c| combinations << c}}
+      return combinations
+    end
+    
     def objects_identifiers_in_rule
       rule_without_punctuation.split.delete_if{|x| !(thing_id_pattern =~ x)}
     end

@@ -227,5 +227,19 @@ module ArrayLogic
       assert_equal([1, 2, 3, 4], @rule.object_ids_used)
     end
     
+    def test_combinations_that_match
+      @rule.rule = 't1 or t2'
+      assert_equal([[1], [2], [1,2]], @rule.combinations_that_match)
+      @rule.rule = 't1 and t2'
+      assert_equal([[1,2]], @rule.combinations_that_match)
+    end
+    
+    def test_combinations_that_do_not_match
+      @rule.rule = 't1 or t2'
+      assert_equal([], @rule.combinations_that_do_not_match)
+      @rule.rule = 't1 and t2'
+      assert_equal([[1],[2]], @rule.combinations_that_do_not_match)
+    end
+    
   end
 end
