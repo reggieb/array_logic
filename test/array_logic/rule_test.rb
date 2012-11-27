@@ -210,5 +210,17 @@ module ArrayLogic
       assert_equal(expected, result)
     end
     
+    def test_match_with_empty_rule
+      @rule.rule = ""
+      things = get_things([1, 2])
+      assert_equal(nil, @rule.match(things.first))
+    end
+    
+    def test_matches_with_empty_rule
+      @rule.rule = ""
+      things = get_things([1, 2])
+      assert_equal([], @rule.matches([things.first], [things.last]))
+    end
+    
   end
 end

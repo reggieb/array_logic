@@ -40,8 +40,6 @@ module ArrayLogic
       return final_processed_rule
     end
 
-
-
     def rule_processing_steps
       add_space_around_puctuation_characters
       make_everything_lower_case
