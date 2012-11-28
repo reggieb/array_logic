@@ -37,11 +37,11 @@ module ArrayLogic
     end
     
     def combinations_that_match
-      combinations_of_identifiers_in_rule.delete_if{|ids| ! match_ids(ids)}
+      combinations_of_identifiers_in_rule.delete_if{|ids| ! match_ids(ids)} if rule and !rule.empty?
     end
     
     def combinations_that_do_not_match
-      combinations_of_identifiers_in_rule.delete_if{|ids| match_ids(ids)}
+      combinations_of_identifiers_in_rule.delete_if{|ids| match_ids(ids)} if rule and !rule.empty?
     end
 
     private

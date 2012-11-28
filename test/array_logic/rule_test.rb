@@ -234,11 +234,30 @@ module ArrayLogic
       assert_equal([[1,2]], @rule.combinations_that_match)
     end
     
+    def test_combinations_that_match_without_rule
+      @rule.rule = nil
+      assert_nil(@rule.combinations_that_match, "combinations_that_match should return nil if there is no rule")
+      @rule.rule = ""
+      assert_nil(@rule.combinations_that_match, "combinations_that_match should return nil if the rule is blank")
+    end
+    
     def test_combinations_that_do_not_match
       @rule.rule = 't1 or t2'
       assert_equal([], @rule.combinations_that_do_not_match)
       @rule.rule = 't1 and t2'
       assert_equal([[1],[2]], @rule.combinations_that_do_not_match)
+    end
+    
+    def test_combinations_that_do_not_match_without_rule
+      @rule.rule = nil
+      assert_nil(@rule.combinations_that_do_not_match, "combinations_that_do_not_match should return nil if there is no rule")
+      @rule.rule = ""
+      assert_nil(@rule.combinations_that_do_not_match, "combinations_that_do_not_match should return nil if the rule is blank")      
+    end
+    
+    def test_combinations_that_do_not_match_when_none_returned
+      @rule.rule = 't1'
+      assert_equal([], @rule.combinations_that_do_not_match)
     end
     
   end
