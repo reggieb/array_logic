@@ -227,6 +227,11 @@ module ArrayLogic
       assert_equal([1, 2, 3, 4], @rule.object_ids_used)
     end
     
+    def test_object_ids_user_does_not_return_duplicates
+      @rule.rule = 't1 and t2 and (2 in t1 t2)'
+      assert_equal([1, 2], @rule.object_ids_used)
+    end
+    
     def test_combinations_that_match
       @rule.rule = 't1 or t2'
       assert_equal([[1], [2], [1,2]], @rule.combinations_that_match)
@@ -239,6 +244,11 @@ module ArrayLogic
       assert_nil(@rule.combinations_that_match, "combinations_that_match should return nil if there is no rule")
       @rule.rule = ""
       assert_nil(@rule.combinations_that_match, "combinations_that_match should return nil if the rule is blank")
+    end
+    
+    def test_combinations_that_match_with_duplicate_ids
+      @rule.rule = 't1 and t2 and (2 in t1 t2)'
+      assert_equal(1, @rule.combinations_that_match.length, "should not identify combinations for both occurancies of each id")
     end
     
     def test_combinations_that_do_not_match
@@ -259,6 +269,6 @@ module ArrayLogic
       @rule.rule = 't1'
       assert_equal([], @rule.combinations_that_do_not_match)
     end
-    
+      
   end
 end

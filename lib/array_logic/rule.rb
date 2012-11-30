@@ -33,7 +33,7 @@ module ArrayLogic
     
     def object_ids_used
       chrs_after_first = 1..-1
-      objects_identifiers_in_rule.collect{|i| i[chrs_after_first].to_i}
+      objects_identifiers_in_rule.collect{|i| i[chrs_after_first].to_i}.uniq
     end
     
     def combinations_that_match
