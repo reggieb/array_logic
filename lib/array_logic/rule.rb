@@ -12,7 +12,7 @@ module ArrayLogic
     end
 
     def match(things)
-      rule_valid?
+      check_rule
       @things = things
       @thing_ids = things.collect(&:id)
       logic
@@ -23,8 +23,10 @@ module ArrayLogic
     end
 
     def rule_valid?
-      check_rule_entered
-      check_allowed_characters
+      check_rule
+      !rule.empty?
+    rescue
+      return false
     end
 
     def replace_item(pattern, processor)
@@ -33,24 +35,35 @@ module ArrayLogic
     
     def object_ids_used
       chrs_after_first = 1..-1
-      objects_identifiers_in_rule.collect{|i| i[chrs_after_first].to_i}.uniq
+      @object_ids_used ||= objects_identifiers_in_rule.collect{|i| i[chrs_after_first].to_i}.uniq
     end
     
-    def combinations_that_match
-      combinations_of_identifiers_in_rule.delete_if{|ids| ! match_ids(ids)} if rule and !rule.empty?
+    def matching_combinations
+      combinations_of_identifiers_in_rule_that_pass {|c| match_ids(c)}  
     end
     
-    def combinations_that_do_not_match
-      combinations_of_identifiers_in_rule.delete_if{|ids| match_ids(ids)} if rule and !rule.empty?
+    def blocking_combinations
+      combinations_of_identifiers_in_rule_that_pass {|c| ! match_ids(c)}
     end
 
     private
     def match_ids(ids)
-      rule_valid?
       @thing_ids = ids
       logic
     end
     
+    def combinations_of_identifiers_in_rule_that_pass(&test)
+      if rule_valid?
+        combinations = Array.new
+        (1..id_count).each{|n| object_ids_used.combination(n).each{|c| combinations << c if test.call(c)}}
+        return combinations  
+      end
+    end
+    
+    def id_count
+      object_ids_used.length
+    end
+        
     def combinations_of_identifiers_in_rule
       ids = object_ids_used
       combinations = Array.new
@@ -128,6 +141,11 @@ module ArrayLogic
     
     def rule_without_punctuation
       rule.gsub(/[[:punct:]]/, '')
+    end
+    
+    def check_rule
+      check_rule_entered
+      check_allowed_characters
     end
 
     def check_rule_entered

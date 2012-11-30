@@ -232,42 +232,42 @@ module ArrayLogic
       assert_equal([1, 2], @rule.object_ids_used)
     end
     
-    def test_combinations_that_match
+    def test_matching_combinations
       @rule.rule = 't1 or t2'
-      assert_equal([[1], [2], [1,2]], @rule.combinations_that_match)
+      assert_equal([[1], [2], [1,2]], @rule.matching_combinations)
       @rule.rule = 't1 and t2'
-      assert_equal([[1,2]], @rule.combinations_that_match)
+      assert_equal([[1,2]], @rule.matching_combinations)
     end
     
-    def test_combinations_that_match_without_rule
+    def test_matching_combinations_without_rule
       @rule.rule = nil
-      assert_nil(@rule.combinations_that_match, "combinations_that_match should return nil if there is no rule")
+      assert_equal(nil, @rule.matching_combinations)
       @rule.rule = ""
-      assert_nil(@rule.combinations_that_match, "combinations_that_match should return nil if the rule is blank")
+      assert_equal(nil, @rule.matching_combinations)
     end
     
-    def test_combinations_that_match_with_duplicate_ids
+    def test_matching_combinations_with_duplicate_ids
       @rule.rule = 't1 and t2 and (2 in t1 t2)'
-      assert_equal(1, @rule.combinations_that_match.length, "should not identify combinations for both occurancies of each id")
+      assert_equal(1, @rule.matching_combinations.length, "should not identify combinations for both occurancies of each id")
     end
     
-    def test_combinations_that_do_not_match
+    def test_blocking_combinations
       @rule.rule = 't1 or t2'
-      assert_equal([], @rule.combinations_that_do_not_match)
+      assert_equal([], @rule.blocking_combinations)
       @rule.rule = 't1 and t2'
-      assert_equal([[1],[2]], @rule.combinations_that_do_not_match)
+      assert_equal([[1],[2]], @rule.blocking_combinations)
     end
     
-    def test_combinations_that_do_not_match_without_rule
+    def test_blocking_combinations_without_rule
       @rule.rule = nil
-      assert_nil(@rule.combinations_that_do_not_match, "combinations_that_do_not_match should return nil if there is no rule")
+      assert_equal(nil, @rule.blocking_combinations)
       @rule.rule = ""
-      assert_nil(@rule.combinations_that_do_not_match, "combinations_that_do_not_match should return nil if the rule is blank")      
+      assert_equal(nil, @rule.blocking_combinations)      
     end
     
-    def test_combinations_that_do_not_match_when_none_returned
+    def test_blocking_combinations_when_none_returned
       @rule.rule = 't1'
-      assert_equal([], @rule.combinations_that_do_not_match)
+      assert_equal([], @rule.blocking_combinations)
     end
       
   end

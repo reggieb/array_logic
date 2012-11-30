@@ -15,11 +15,23 @@ rule_sets.each do |rule_set|
   puts "----------------------------\n"
   puts "The rule '#{rule_set}' would match the following:"
   
-  rule.combinations_that_match.each{|c| puts "\t#{c.inspect}"}
+  rule.matching_combinations.each{|c| puts "\t#{c.inspect}"}
   
   puts "\nAnd would not match"
   
-  rule.combinations_that_do_not_match.each{|c| puts "\t#{c.inspect}"}
+  rule.blocking_combinations.each{|c| puts "\t#{c.inspect}"}
   
   puts "\n\n"
+end
+
+or_rule = (1..12).to_a.collect{|n| "t#{n}"}.join(" or ")
+
+rule = ArrayLogic::Rule.new
+rule.rule = or_rule
+
+require 'benchmark'
+
+Benchmark.bm do |x|
+  x.report(:matching_combinations) { rule.matching_combinations }
+  x.report(:blocking_combinations) { rule.blocking_combinations}
 end

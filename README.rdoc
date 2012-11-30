@@ -38,8 +38,8 @@ rule.
 
     rule = ArrayLogic::Rule.new
     rule.rule = 'a1 and a2'
-    rule.combinations_that_match        -->  [[1,2]]
-    rule.combinations_that_do_not_match -->  [[1],[2]]
+    rule.matching_combinations        -->  [[1,2]]
+    rule.blocking_combinations -->  [[1],[2]]
 
 To limit the number of samples presented, both only use ids used within
 the rule. For the example about, an array that includes [1,2] would match, 
