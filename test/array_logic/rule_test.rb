@@ -269,6 +269,12 @@ module ArrayLogic
       @rule.rule = 't1'
       assert_equal([], @rule.blocking_combinations)
     end
+    
+    def test_assigning_rule_on_creation
+      text = 'a1 and a2'
+      rule = Rule.new(text)
+      assert_equal(text, rule.rule)
+    end
       
   end
 end

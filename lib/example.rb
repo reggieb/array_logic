@@ -9,8 +9,7 @@ rule_sets = [
 
 rule_sets.each do |rule_set|
   
-  rule = ArrayLogic::Rule.new
-  rule.rule = rule_set
+  rule = ArrayLogic::Rule.new(rule_set)
   
   puts "----------------------------\n"
   puts "The rule '#{rule_set}' would match the following:"
@@ -26,8 +25,7 @@ end
 
 or_rule = (1..12).to_a.collect{|n| "t#{n}"}.join(" or ")
 
-rule = ArrayLogic::Rule.new
-rule.rule = or_rule
+rule = ArrayLogic::Rule.new or_rule
 
 require 'benchmark'
 

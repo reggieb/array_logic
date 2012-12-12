@@ -3,8 +3,8 @@ module ArrayLogic
     attr_accessor :rule
     attr_reader :things, :thing_ids
 
-    def initialize
-
+    def initialize(rule = nil)
+      @rule = rule
     end
 
     def matches(*array_of_things)
