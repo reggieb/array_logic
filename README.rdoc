@@ -37,11 +37,11 @@ Two methods allow you to determine sample combinations that match the current
 rule.  
 
     rule = ArrayLogic::Rule.new 'a1 and a2'
-    rule.matching_combinations        -->  [[1,2]]
-    rule.blocking_combinations -->  [[1],[2]]
+    rule.matching_combinations   -->  [[1,2]]
+    rule.blocking_combinations   -->  [[1],[2]]
 
 To limit the number of samples presented, both only use ids used within
-the rule. For the example about, an array that includes [1,2] would match, 
+the rule. For the example above, an array that includes [1,2] would match, 
 and so would [1,2,3]. However, arrays that only contain 1 or 2 would not match 
 (for example [1,3])
 
