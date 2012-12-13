@@ -29,6 +29,12 @@ The *match* and *matches* methods allow arrays to be tested against these rules:
     rule_two.match([a1, a2])            --> false
     rule_two.matches([a1, a2], [a1])    --> [[a1]]
 
+You can also test for arrays that do not match the rule by using *block* 
+and *blockers*:
+
+    rule_two.block([a1, a2])            --> true
+    rule_two.blockers([a1, a2], [a1])    --> [[a1, a2]]
+
 See test/array_logic/rule_test for more examples
 
 === Combinations that match

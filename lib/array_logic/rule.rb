@@ -8,7 +8,11 @@ module ArrayLogic
     end
 
     def matches(*array_of_things)
-      array_of_things.delete_if{|things| !match(things)}
+      array_of_things.delete_if{|things| block(things)}
+    end
+    
+    def blockers(*array_of_things)
+      array_of_things.delete_if{|things| match(things)}
     end
 
     def match(things)
@@ -16,6 +20,10 @@ module ArrayLogic
       @things = things
       @thing_ids = things.collect(&:id)
       logic
+    end
+    
+    def block(things)
+      ! match(things)
     end
 
     def logic

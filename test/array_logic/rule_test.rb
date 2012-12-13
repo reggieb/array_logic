@@ -158,6 +158,31 @@ module ArrayLogic
         @rule.match([1, 2])
       end
     end
+    
+    def test_match_with_empty_rule
+      @rule.rule = ""
+      things = get_things([1, 2])
+      assert(!@rule.match([things.first]), "Should be no match when rule empty")
+    end
+    
+    def test_block_without_rule
+      assert_raise RuntimeError do
+        @rule.block([1, 2])
+      end
+    end
+    
+    def test_block_with_number_rule
+      @rule.rule = 1
+      assert_raise RuntimeError do
+        @rule.block([1, 2])
+      end
+    end
+    
+    def test_block_with_empty_rule
+      @rule.rule = ""
+      things = get_things([1, 2])
+      assert(@rule.block([things.first]), "Should be block when rule empty")
+    end    
 
     def test_replace_item
       @rule.rule = 't1 or ( t2 and t3 )'
@@ -180,46 +205,48 @@ module ArrayLogic
       end
     end
     
-    def test_matches
+    def test_matches_and_blokers
       @rule.rule = 't1 and t2'
-      t1 = Thing.new(1)
-      t2 = Thing.new(2)
-      t3 = Thing.new(3)
-      match_one = [t1, t2]
-      match_two = [t1, t2, t3]
-      no_match_one = [t2, t3]
-      no_match_two = [t3]
+      match_one = get_things [1, 2]
+      match_two = get_things [1, 2, 3]
+      no_match_one = get_things [2, 3]
+      no_match_two = get_things [3]
       
-      result = @rule.matches(match_one, match_two, no_match_one, no_match_two)
-      expected = [match_one, match_two]
-      assert_equal(expected, result)
+      matches = @rule.matches(match_one, match_two, no_match_one, no_match_two)
+      expected_matches = [match_one, match_two]   
+      assert_equal(expected_matches, matches, "Matches should be returned")
+      
+      blockers = @rule.blockers(match_one, match_two, no_match_one, no_match_two)
+      expected_blockers = [no_match_one, no_match_two]
+      assert_equal(expected_blockers, blockers, "Blockers should be returned")
     end
     
-    def test_matches_with_or
+    def test_matches_and_blokers_with_or
       @rule.rule = 't1 or t2'
-      t1 = Thing.new(1)
-      t2 = Thing.new(2)
-      t3 = Thing.new(3)
-      match_one = [t1, t2]
-      match_two = [t1, t2, t3]
-      match_three = [t2, t3]
-      no_match_two = [t3]
+      match_one = get_things [1, 2]
+      match_two = get_things [1, 2, 3]
+      match_three = get_things [2, 3]
+      no_match_one = get_things [3]
       
-      result = @rule.matches(match_one, match_two, match_three, no_match_two)
-      expected = [match_one, match_two, match_three]
-      assert_equal(expected, result)
-    end
-    
-    def test_match_with_empty_rule
-      @rule.rule = ""
-      things = get_things([1, 2])
-      assert(!@rule.match([things.first]), "Should be no match when rule empty")
+      matches = @rule.matches(match_one, match_two, match_three, no_match_one)
+      expected_matches = [match_one, match_two, match_three]
+      assert_equal(expected_matches, matches, "Matches should be returned")
+      
+      blockers = @rule.blockers(match_one, match_two, match_three, no_match_one)
+      expected_blockers = [no_match_one]
+      assert_equal(expected_blockers, blockers, "Blockers should be returned")
     end
     
     def test_matches_with_empty_rule
       @rule.rule = ""
-      things = get_things([1, 2])
-      assert_equal([], @rule.matches([things.first], [things.last]))
+      things = get_things([1, 2]).collect{|t| [t]}
+      assert_equal([], @rule.matches(*things))
+    end
+    
+    def test_blokers_with_empty_rule
+      @rule.rule = ""
+      things = get_things([1, 2]).collect{|t| [t]}
+      assert_equal(things, @rule.blockers(*things))
     end
     
     def test_object_ids_used
