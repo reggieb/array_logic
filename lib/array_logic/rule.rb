@@ -69,13 +69,6 @@ module ArrayLogic
       object_ids_used.length
     end
         
-    def combinations_of_identifiers_in_rule
-      ids = object_ids_used
-      combinations = Array.new
-      (1..ids.length).each{|n| ids.combination(n).each{|c| combinations << c}}
-      return combinations
-    end
-    
     def objects_identifiers_in_rule
       rule_without_punctuation.split.delete_if{|x| !(thing_id_pattern =~ x)}
     end
@@ -93,6 +86,7 @@ module ArrayLogic
       replace_item(number_in_set_pattern, comparison_of_number_with_true_count)
     end
 
+    # for example: 2 in t1, t2, t3
     def number_in_set_pattern
       /\d+\s+in\s+((true|false)[\,\s]*)+/
     end
@@ -153,29 +147,33 @@ module ArrayLogic
     end
 
     def check_allowed_characters
-      raise_invalid_charachers unless allowed_charachers_pattern =~ rule
+      raise_invalid_characters unless allowed_characters_pattern =~ rule
     end
+    
+    def raise_invalid_characters
+      invalid = rule.split.collect{|s| (allowed_characters_pattern =~ s) ? nil : s }.compact
+      raise "The rule '#{rule}' is not valid. The problem is within '#{invalid.join(' ')}'"
+    end    
 
-    def allowed_charachers_pattern
+    def allowed_characters_pattern
       case_insensitive = true
-      Regexp.new("^(#{allowed_characters.join('|')})*$", case_insensitive)
+      Regexp.new("^(#{array_of_allowed_patterns.join('|')})*$", case_insensitive)
     end
 
     def allowed_characters
-      brackets = ['\(', '\)']
-      in_pattern = ['\d+\s+in']
-      ids = ['\w\d+']
-      logic_words = %w{and or not}
-      logic_chrs = ['&&', '\|\|', '!']
-      commas = ['\,']
-      white_space = ['\s']
-
-      [brackets, in_pattern, ids, logic_words, logic_chrs, commas, white_space].flatten
+      {
+        :brackets => ['\(', '\)'],
+        :in_pattern => ['\d+\s+in'],
+        :ids => ['\w\d+'],
+        :logic_words => %w{and or not},
+        :logic_chrs => ['&&', '\|\|', '!'],
+        :commas => ['\,'],
+        :white_space => ['\s'],
+      }
     end
-
-    def raise_invalid_charachers
-      invalid = rule.split.collect{|s| (allowed_charachers_pattern =~ s) ? nil : s }.compact
-      raise "The rule '#{rule}' is not valid. The problem is within '#{invalid.join(' ')}'"
+    
+    def array_of_allowed_patterns
+      allowed_characters.values.flatten
     end
 
   end
