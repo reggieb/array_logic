@@ -10,13 +10,13 @@ The logic for an active record model Answer, looks like this:
       ....
     a5 = Answer.find(5)
 
-    rule_one.rule = "(a1 and a2) or (a3 and a4)"
+    rule_one = ArrayLogic::Rule.new "(a1 and a2) or (a3 and a4)"
 
-    rule_two.rule = "a1 and not a2"
+    rule_two = ArrayLogic::Rule.new "a1 and not a2"
 
-    rule_three.rule = "2 in a1 a2 a3"
+    rule_three = ArrayLogic::Rule.new "2 in a1 a2 a3"
 
-    rule_four.rule = "(2 in a1 a2 a3) and (1 in a4 a5)"
+    rule_four = ArrayLogic::Rule.new "(2 in a1 a2 a3) and (1 in a4 a5)"
 
 
                   rule_one      rule_two      rule_three      rule_four
@@ -36,8 +36,8 @@ See test/array_logic/rule_test for more examples
 Two methods allow you to determine sample combinations that match the current
 rule.  
 
-    rule = ArrayLogic::Rule.new
-    rule.rule = 'a1 and a2'
+    rule = ArrayLogic::Rule.new 'a1 and a2'
+
     rule.matching_combinations   -->  [[1,2]]
     rule.blocking_combinations   -->  [[1],[2]]
 
