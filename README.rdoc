@@ -1,9 +1,11 @@
 == array_logic
 
-A system that allows me to define the logic for comparing arrays.
+A system that allows me to define the logic for comparing arrays of objects.
+
+One prerequisite for the comparison is that the objects have an id method that
+returns a unique (within the set of objects) integer.
 
 The logic for an active record model Answer, looks like this:
-
 
     a1 = Answer.find(1)
     a2 = Answer.find(2)
