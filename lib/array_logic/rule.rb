@@ -45,7 +45,12 @@ module ArrayLogic
     def blocking_combinations
       combinations_of_identifiers_in_rule_that_pass {|c| ! match_ids(c)}
     end
-
+    
+    def check_rule
+      check_rule_entered
+      check_allowed_characters
+    end
+    
     private
     def match_ids(ids)
       @thing_ids = ids
@@ -141,11 +146,6 @@ module ArrayLogic
     
     def rule_without_punctuation
       rule.gsub(/[[:punct:]]/, '')
-    end
-    
-    def check_rule
-      check_rule_entered
-      check_allowed_characters
     end
 
     def check_rule_entered
