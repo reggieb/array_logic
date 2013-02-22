@@ -18,16 +18,11 @@ module ArrayLogic
     def match(things)
       check_rule
       @things = things
-      @thing_ids = things.collect(&:id)
-      logic
+      match_ids things.collect(&:id)
     end
     
     def block(things)
       ! match(things)
-    end
-
-    def logic
-      eval(expression)  
     end
 
     def rule_valid?
@@ -37,10 +32,6 @@ module ArrayLogic
       return false
     end
 
-    def replace_item(pattern, processor)
-      @processed_rule = processed_rule.gsub(pattern) {|x| processor.call(x)}
-    end
-    
     def object_ids_used
       chrs_after_first = 1..-1
       @object_ids_used ||= objects_identifiers_in_rule.collect{|i| i[chrs_after_first].to_i}.uniq
@@ -60,6 +51,10 @@ module ArrayLogic
     end
     
     private
+    def logic
+      eval(expression)  
+    end
+    
     def match_ids(ids)
       @thing_ids = ids
       logic
@@ -90,8 +85,12 @@ module ArrayLogic
       add_space_around_puctuation_characters
       make_everything_lower_case
       replace_logic_words_with_operators
-      replace_item(thing_id_pattern, true_or_false_for_thing_id_in_thing_ids)
+      replace_item(thing_id_pattern, ids_include_this_id)
       replace_item(number_in_set_pattern, comparison_of_number_with_true_count)
+    end
+    
+    def replace_item(pattern, processor)
+      @processed_rule = processed_rule.gsub(pattern) {|x| processor.call(x)}
     end
 
     # for example: 2 in t1, t2, t3
@@ -112,7 +111,7 @@ module ArrayLogic
       /\w\d+/
     end
 
-    def true_or_false_for_thing_id_in_thing_ids
+    def ids_include_this_id
       lambda {|s| thing_ids.include?(s[/\d+/].to_i)}
     end
 

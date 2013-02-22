@@ -187,7 +187,7 @@ module ArrayLogic
     def test_replace_item
       @rule.rule = 't1 or ( t2 and t3 )'
       process = lambda {|s| [1, 2].include?(s[/\d+/].to_i)}
-      result = @rule.replace_item(/\w\d+/, process)
+      result = @rule.send(:replace_item, /\w\d+/, process)
       assert_equal('true or ( true and false )', result)
     end
     
