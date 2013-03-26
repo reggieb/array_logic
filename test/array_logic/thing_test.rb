@@ -10,5 +10,10 @@ module ArrayLogic
       assert_equal((1..number).to_a, things.values.collect(&:id))
       assert_equal((1..number).to_a, things.keys)
     end
+    
+    def test_cost
+      thing = Thing.new(1)
+      assert_equal(2, thing.cost)
+    end
   end
 end

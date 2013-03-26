@@ -82,6 +82,7 @@ module ArrayLogic
     end
 
     def rule_processing_steps
+      replace_item(function_pattern, value_of_function_called_on_id_objects)
       add_space_around_puctuation_characters
       make_everything_lower_case
       replace_logic_words_with_operators
@@ -113,6 +114,27 @@ module ArrayLogic
 
     def ids_include_this_id
       lambda {|s| thing_ids.include?(s[/\d+/].to_i)}
+    end
+        
+    def function_pattern
+      /(#{array_functions.keys.join('|')})\(\s*\:(\w+)\s*\)\s*((==|[\<\>]=?)\s*\d+)/
+    end
+    
+    def array_functions
+      {
+        :sum => 'inject(:+)',
+        :average => 'reduce(:+) / size.to_f',
+        :count => 'size'
+      }
+    end
+    
+    def value_of_function_called_on_id_objects
+      lambda do |string|
+        all, array_function, function, operator = function_pattern.match(string).to_a
+        values = things.collect &function.to_sym
+        result = values.instance_eval(array_functions[array_function.to_sym])
+        "( #{result} #{operator} )"
+      end
     end
 
     def processed_rule
@@ -171,11 +193,12 @@ module ArrayLogic
       {
         :brackets => ['\(', '\)'],
         :in_pattern => ['\d+\s+in'],
-        :ids => ['\w\d+'],
+        :ids => [thing_id_pattern],
         :logic_words => %w{and or not},
         :logic_chrs => ['&&', '\|\|', '!'],
         :commas => ['\,'],
         :white_space => ['\s'],
+        :function_pattern => [function_pattern]
       }
     end
     

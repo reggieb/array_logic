@@ -144,7 +144,99 @@ module ArrayLogic
       assert_thing_match([1, 2, 3], @rule)
       assert_no_thing_match([3], @rule)
       assert_thing_match([4], @rule) 
-    end    
+    end
+    
+    def test_cost
+      assert_equal(2, Thing.new(1).cost)
+    end
+    
+    def test_sum
+      @rule.rule = 'sum(:cost) == 2'
+      assert_no_thing_match([1, 2], @rule)
+      assert_no_thing_match([1, 2, 3], @rule)
+      assert_thing_match([3], @rule)
+      assert_thing_match([4], @rule) 
+    end
+    
+    def test_sum_greater_than
+      @rule.rule = 'sum(:cost) > 2'
+      assert_thing_match([1, 2], @rule)
+      assert_thing_match([1, 2, 3], @rule)
+      assert_no_thing_match([3], @rule)
+      assert_no_thing_match([4], @rule) 
+    end
+    
+    def test_sum_less_than
+      @rule.rule = 'sum(:cost) < 3'
+      assert_no_thing_match([1, 2], @rule)
+      assert_no_thing_match([1, 2, 3], @rule)
+      assert_thing_match([3], @rule)
+      assert_thing_match([4], @rule) 
+    end
+    
+    def test_average
+      @rule.rule = 'average(:id) == 2'
+      assert_no_thing_match([1, 2], @rule)
+      assert_thing_match([1, 2, 3], @rule)
+      assert_no_thing_match([3], @rule)
+      assert_no_thing_match([4], @rule) 
+    end
+    
+    def test_average_greater_than
+      @rule.rule = 'average(:id) > 2'
+      assert_no_thing_match([1, 2], @rule)
+      assert_no_thing_match([1, 2, 3], @rule)
+      assert_thing_match([3], @rule)
+      assert_thing_match([4], @rule) 
+    end
+    
+    def test_average_less_than
+      @rule.rule = 'average(:id) <= 2'
+      assert_thing_match([1, 2], @rule)
+      assert_thing_match([1, 2, 3], @rule)
+      assert_no_thing_match([3], @rule)
+      assert_no_thing_match([4], @rule) 
+    end
+    
+    def test_count
+      @rule.rule = 'count(:id) == 2'
+      assert_thing_match([1, 2], @rule)
+      assert_no_thing_match([1, 2, 3], @rule)
+      assert_no_thing_match([3], @rule)
+      assert_no_thing_match([4], @rule) 
+    end
+    
+    def test_count_greater_than
+      @rule.rule = 'count(:id) > 2'
+      assert_no_thing_match([1, 2], @rule)
+      assert_thing_match([1, 2, 3], @rule)
+      assert_no_thing_match([3], @rule)
+      assert_no_thing_match([4], @rule) 
+    end
+    
+    def test_count_less_than
+      @rule.rule = 'count(:id) <= 2'
+      assert_thing_match([1, 2], @rule)
+      assert_no_thing_match([1, 2, 3], @rule)
+      assert_thing_match([3], @rule)
+      assert_thing_match([4], @rule) 
+    end
+    
+    def test_function_with_other_rule
+      @rule.rule = 'sum(:id) >= 3 and t3'
+      assert_no_thing_match([1, 2], @rule)
+      assert_thing_match([1, 2, 3], @rule)
+      assert_thing_match([3], @rule)
+      assert_no_thing_match([4], @rule) 
+    end
+    
+    def test_function_with_other_rule_with_brackets
+      @rule.rule = '(sum(:id) >= 3) and t3'
+      assert_no_thing_match([1, 2], @rule)
+      assert_thing_match([1, 2, 3], @rule)
+      assert_thing_match([3], @rule)
+      assert_no_thing_match([4], @rule) 
+    end
     
     def test_match_without_rule
       assert_raise RuntimeError do

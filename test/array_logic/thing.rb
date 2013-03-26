@@ -8,6 +8,10 @@ module ArrayLogic
       @id = number
     end
     
+    def cost
+      2
+    end
+    
     def self.make(number)
       things = Hash.new
       (1..number).each{|n| things[n] = new(n)}
