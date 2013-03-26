@@ -9,7 +9,7 @@ Rake::RDocTask.new do |rdoc|
   files =['README.rdoc', 'MIT-LICENSE', 'lib/**/*.rb']
   rdoc.rdoc_files.add(files)
   rdoc.main = "README.rdoc" # page to start on
-  rdoc.title = "Dibber Docs"
+  rdoc.title = "ArrayLogic Docs"
   rdoc.rdoc_dir = 'doc/rdoc' # rdoc output folder
   rdoc.options << '--line-numbers'
 end
