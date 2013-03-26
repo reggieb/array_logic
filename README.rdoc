@@ -1,4 +1,4 @@
-== array_logic
+= ArrayLogic
 
 A system that allows me to define the logic for comparing arrays of objects.
 
@@ -39,7 +39,7 @@ and *blockers*:
 
 See test/array_logic/rule_test for more examples
 
-=== Combinations that match
+== Combinations that match
 
 Two methods allow you to determine sample combinations that match the current
 rule.  
@@ -57,3 +57,69 @@ and so would [1,2,3]. However, arrays that only contain 1 or 2 would not match
 Run example.rb to see some more examples
 
     ruby /lib/example.rb
+
+== Functions
+
+Version 0.2 introduces the concept of functions to ArrayLogic. The function
+syntax is:
+
+    <function>(<object_method as symbol>) <operator> <number>
+
+where:
+
+[function]       One of the functions listed below
+[object_method]  A method that can be called on all of the objects in the array
+[operator]       one of: <, <=, >, >=, ==
+[number]         a number to compare with the result
+
+Using this array as an example:
+
+    answers = [Answer.find(1), Answer.find(5), Answer.find(6)]
+
+=== sum
+
+Sums the values returned by the object_method and compares them with the number
+
+    rule = ArrayLogic::Rule.new 'sum(:id) == 12'
+    rule.match(answers)   --> true
+
+    rule = ArrayLogic::Rule.new 'sum(:id) > 12'
+    rule.match(answers)   --> false
+
+    rule = ArrayLogic::Rule.new 'sum(:id) >= 12'
+    rule.match(answers)   --> true
+
+=== average
+
+Averages the values returned by the object_method and compares them with the number
+
+    rule = ArrayLogic::Rule.new 'average(:id) == 4'
+    rule.match(answers)   --> true
+
+    rule = ArrayLogic::Rule.new 'average(:id) < 4'
+    rule.match(answers)   --> false
+
+    rule = ArrayLogic::Rule.new 'average(:id) <= 4'
+    rule.match(answers)   --> true
+
+=== count
+
+Counts the number of items not returning nil.
+
+    rule = ArrayLogic::Rule.new 'count(:id) == 3'
+    rule.match(answers)   --> true
+
+If answer has a method :is_odd? that returned nil if the :id is even:
+
+    rule = ArrayLogic::Rule.new 'count(:is_odd?) == 2'
+    rule.match(answers)   --> true
+
+=== Combining functions with other rules
+
+functions can be combined with other rules:
+
+    rule = ArrayLogic::Rule.new 'sum(:id) == 12 and a6'
+    rule.match(answers)   --> true
+
+    rule = ArrayLogic::Rule.new '(sum(:id) == 12) and not a6'
+    rule.match(answers)   --> false

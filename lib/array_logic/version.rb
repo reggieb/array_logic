@@ -1,9 +1,13 @@
 module ArrayLogic
-  VERSION = "0.1.2"
+  VERSION = "0.2.0"
 end
 
 # History
 # =======
+# 
+# Version 0.2.0
+# =============
+# Adds functions: sum, count and average
 # 
 # Version 0.1.2
 # =============
