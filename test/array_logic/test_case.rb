@@ -1,5 +1,6 @@
 require 'test/unit'
 require_relative '../../lib/array_logic'
+require_relative 'thing'
 
 module ArrayLogic
   class TestCase < Test::Unit::TestCase
