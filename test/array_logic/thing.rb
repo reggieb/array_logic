@@ -12,7 +12,7 @@ module ArrayLogic
       2
     end
     
-    def id_odd
+    def id_odd?
       return true if id % 2 != 0
     end
     

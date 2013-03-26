@@ -117,7 +117,7 @@ module ArrayLogic
     end
         
     def function_pattern
-      /(#{array_functions.keys.join('|')})\(\s*\:(\w+)\s*\)\s*((==|[\<\>]=?)\s*\d+(\.\d+)?)/
+      /(#{array_functions.keys.join('|')})\(\s*\:(\w+[\?\!]?)\s*\)\s*((==|[\<\>]=?)\s*\d+(\.\d+)?)/
     end
     
     def array_functions
