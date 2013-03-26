@@ -12,6 +12,10 @@ module ArrayLogic
       2
     end
     
+    def id_odd
+      return true if id % 2 != 0
+    end
+    
     def self.make(number)
       things = Hash.new
       (1..number).each{|n| things[n] = new(n)}

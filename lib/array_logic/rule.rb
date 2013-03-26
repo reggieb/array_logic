@@ -124,7 +124,7 @@ module ArrayLogic
       {
         :sum => 'inject(:+)',
         :average => 'reduce(:+) / size.to_f',
-        :count => 'size'
+        :count => 'compact.size'
       }
     end
     

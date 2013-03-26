@@ -15,5 +15,10 @@ module ArrayLogic
       thing = Thing.new(1)
       assert_equal(2, thing.cost)
     end
+    
+    def test_id_odd
+      things = Thing.make(4)
+      assert_equal([true, nil, true, nil], things.values.collect(&:id_odd))
+    end
   end
 end
