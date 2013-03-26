@@ -182,6 +182,14 @@ module ArrayLogic
       assert_no_thing_match([4], @rule) 
     end
     
+    def test_average_with_decimal
+      @rule.rule = 'average(:id) == 1.5'
+      assert_thing_match([1, 2], @rule)
+      assert_no_thing_match([1, 2, 3], @rule)
+      assert_no_thing_match([3], @rule)
+      assert_no_thing_match([4], @rule)       
+    end
+    
     def test_average_greater_than
       @rule.rule = 'average(:id) > 2'
       assert_no_thing_match([1, 2], @rule)
