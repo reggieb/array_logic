@@ -231,7 +231,7 @@ module ArrayLogic
     end
     
     def test_count_with_method_that_can_return_nil
-      @rule.rule = 'count(:id_odd) == 1'
+      @rule.rule = 'count(:id_odd?) == 1'
       assert_thing_match([1, 2], @rule)
       assert_no_thing_match([1, 2, 3], @rule)
       assert_thing_match([3], @rule)
