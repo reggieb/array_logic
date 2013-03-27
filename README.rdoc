@@ -69,7 +69,7 @@ where:
 
 [function]       One of the functions listed below
 [object_method]  A method that can be called on all of the objects in the array
-[operator]       one of: <, <=, >, >=, ==
+[operator]       one of: <, <=, >, >=, ==, !=
 [number]         a number to compare with the result
 
 Using this array as an example:

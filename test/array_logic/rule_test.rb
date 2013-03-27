@@ -238,6 +238,14 @@ module ArrayLogic
       assert_no_thing_match([4], @rule) 
     end
     
+    def test_count_with_not_equal_operator
+      @rule.rule = 'count(:id_odd?) != 1'
+      assert_no_thing_match([1, 2], @rule)
+      assert_thing_match([1, 2, 3], @rule)
+      assert_no_thing_match([3], @rule)
+      assert_thing_match([4], @rule) 
+    end
+    
     def test_function_with_other_rule
       @rule.rule = 'sum(:id) >= 3 and t3'
       assert_no_thing_match([1, 2], @rule)
@@ -252,6 +260,48 @@ module ArrayLogic
       assert_thing_match([1, 2, 3], @rule)
       assert_thing_match([3], @rule)
       assert_no_thing_match([4], @rule) 
+    end
+    
+    def test_function_with_non_existent_object_method
+      @rule.rule = 'sum(:something) > 3'
+      assert_raise NoMethodError do
+        @rule.match(get_things([1, 2]))
+      end
+    end
+    
+    def test_function_with_unsupported_function
+      @rule.rule = 'hat_stand(:id) > 3'
+      assert_raise RuntimeError do
+        @rule.match(get_things([1, 2]))
+      end      
+    end
+    
+    def test_function_with_unsupported_operator
+      @rule.rule = 'sum(:id) || 3'
+      assert_raise RuntimeError do
+        @rule.match(get_things([1, 2]))
+      end      
+    end
+    
+    def test_function_with_single_equals
+      @rule.rule = 'sum(:id) = 3'
+      assert_raise RuntimeError do
+        @rule.match(get_things([1, 2]))
+      end      
+    end    
+    
+    def test_function_without_number
+      @rule.rule = 'sum(:id) == a1'
+      assert_raise RuntimeError do
+        @rule.match(get_things([1, 2]))
+      end       
+    end
+    
+    def test_function_with_object_method_that_does_not_return_number
+      @rule.rule = 'sum(:methods) == 1'
+      assert_raise RuntimeError do
+        @rule.match(get_things([1, 2]))
+      end        
     end
     
     def test_match_without_rule

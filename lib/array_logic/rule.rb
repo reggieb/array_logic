@@ -117,7 +117,7 @@ module ArrayLogic
     end
         
     def function_pattern
-      /(#{array_functions.keys.join('|')})\(\s*\:(\w+[\?\!]?)\s*\)\s*((==|[\<\>]=?)\s*\d+(\.\d+)?)/
+      /(#{array_functions.keys.join('|')})\(\s*\:(\w+[\?\!]?)\s*\)\s*((==|[\<\>\!]=?)\s*\d+(\.\d+)?)/
     end
     
     def array_functions
@@ -132,8 +132,16 @@ module ArrayLogic
       lambda do |string|
         all, array_function, function, operator = function_pattern.match(string).to_a
         values = things.collect &function.to_sym
+        numbers_booleans_or_nils?(values)
         result = values.instance_eval(array_functions[array_function.to_sym])
         "( #{result} #{operator} )"
+      end
+    end
+    
+    def numbers_booleans_or_nils?(values)
+      errors = values.reject{|v| v.nil? || v.is_a?(Numeric) ||  !!v == v}
+      unless errors.empty?
+        raise "Values must be numbers or nils. The problem is here: #{errors.join(", ")}"
       end
     end
 
