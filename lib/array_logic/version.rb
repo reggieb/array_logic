@@ -1,9 +1,13 @@
 module ArrayLogic
-  VERSION = "0.2.0"
+  VERSION = "0.2.1"
 end
 
 # History
 # =======
+# 
+# Version 0.2.1
+# =============
+# Improved handling of errors in functions and add != operator
 # 
 # Version 0.2.0
 # =============
