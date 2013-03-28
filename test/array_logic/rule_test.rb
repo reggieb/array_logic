@@ -298,10 +298,12 @@ module ArrayLogic
     end
     
     def test_function_with_object_method_that_does_not_return_number
-      @rule.rule = 'sum(:methods) == 1'
-      assert_raise RuntimeError do
-        @rule.match(get_things([1, 2]))
-      end        
+      @rule.rule = 'average(:methods) == 0'
+      assert @rule.match(get_things([1, 2])) 
+      @rule.rule = 'sum(:methods) == 0'
+      assert @rule.match(get_things([1, 2]))  
+      @rule.rule = 'count(:methods) == 2'
+      assert @rule.match(get_things([1, 2]))  
     end
     
     def test_match_without_rule

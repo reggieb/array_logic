@@ -52,7 +52,11 @@ module ArrayLogic
     
     private
     def logic
-      eval(expression)  
+      begin
+        eval(expression)
+      rescue SyntaxError
+        raise "Unable to determine logic from this expression : #{expression}"
+      end
     end
     
     def match_ids(ids)
@@ -82,9 +86,9 @@ module ArrayLogic
     end
 
     def rule_processing_steps
-      replace_item(function_pattern, value_of_function_called_on_id_objects)
       add_space_around_puctuation_characters
       make_everything_lower_case
+      replace_item(function_pattern, build_logic_from_function_statement)
       replace_logic_words_with_operators
       replace_item(thing_id_pattern, ids_include_this_id)
       replace_item(number_in_set_pattern, comparison_of_number_with_true_count)
@@ -117,34 +121,29 @@ module ArrayLogic
     end
         
     def function_pattern
-      /(#{array_functions.keys.join('|')})\(\s*\:(\w+[\?\!]?)\s*\)\s*((==|[\<\>\!]=?)\s*\d+(\.\d+)?)/
+      function_name_pattern = array_functions.keys.join('|')
+      instance_function_pattern = '\w+[\?\!]?'               # e.g. 'id', 'this!', 'that?', 'foo_bar'
+      comparison_pattern ='(==|[\<\>]=?|!=)\s*\d+(\.\d+)?'  # e.g. '== 4.3', '> 4'
+      /(#{function_name_pattern})\(\s*\:(#{instance_function_pattern})\s*\)\s*(#{comparison_pattern})/
     end
     
     def array_functions
       {
-        :sum => 'inject(:+)',
-        :average => 'reduce(:+) / size.to_f',
+        :sum => 'reduce(0){|sum,x| x.respond_to?(:to_f) ? sum + x.to_f : sum }',
+        :average => 'reduce(0){|sum,x| x.respond_to?(:to_f) ? sum + x.to_f : sum } / size',
         :count => 'compact.size'
       }
     end
     
-    def value_of_function_called_on_id_objects
+    def build_logic_from_function_statement
       lambda do |string|
-        all, array_function, function, operator = function_pattern.match(string).to_a
-        values = things.collect &function.to_sym
-        numbers_booleans_or_nils?(values)
+        array_function, instance_function, comparison = function_pattern.match(string).to_a[1, 3]
+        values = things.collect &instance_function.to_sym
         result = values.instance_eval(array_functions[array_function.to_sym])
-        "( #{result} #{operator} )"
+        "( #{result} #{comparison} )"
       end
     end
     
-    def numbers_booleans_or_nils?(values)
-      errors = values.reject{|v| v.nil? || v.is_a?(Numeric) ||  !!v == v}
-      unless errors.empty?
-        raise "Values must be numbers or nils. The problem is here: #{errors.join(", ")}"
-      end
-    end
-
     def processed_rule
       @processed_rule ||= rule.clone
     end
@@ -200,13 +199,13 @@ module ArrayLogic
     def allowed_characters
       {
         :brackets => ['\(', '\)'],
-        :in_pattern => ['\d+\s+in'],
+        :in_pattern => '\d+\s+in',
         :ids => [thing_id_pattern],
         :logic_words => %w{and or not},
         :logic_chrs => ['&&', '\|\|', '!'],
-        :commas => ['\,'],
-        :white_space => ['\s'],
-        :function_pattern => [function_pattern]
+        :commas => '\,',
+        :white_space => '\s',
+        :function_pattern => function_pattern
       }
     end
     
