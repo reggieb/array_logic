@@ -414,8 +414,18 @@ module ArrayLogic
       assert_equal([1, 2, 3, 4], @rule.object_ids_used)
     end
     
-    def test_object_ids_user_does_not_return_duplicates
+    def test_object_ids_used_does_not_return_duplicates
       @rule.rule = 't1 and t2 and (2 in t1 t2)'
+      assert_equal([1, 2], @rule.object_ids_used)
+    end
+    
+    def test_object_ids_used_with_function
+      @rule.rule = 'sum(:cope_index) > 10'
+      assert_equal([], @rule.object_ids_used)
+    end
+    
+    def test_object_ids_used_with_function_and_valid_ids
+      @rule.rule = 't1 and t2 and (sum(:cope_index) > 10)'
       assert_equal([1, 2], @rule.object_ids_used)
     end
     

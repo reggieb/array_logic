@@ -113,7 +113,7 @@ module ArrayLogic
 
     # examples: a1, a2, a33, t1
     def thing_id_pattern
-      /\w\d+/
+      /[a-zA-Z]\d+/
     end
 
     def ids_include_this_id

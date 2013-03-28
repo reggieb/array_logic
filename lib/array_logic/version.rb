@@ -1,9 +1,15 @@
 module ArrayLogic
-  VERSION = "0.2.2"
+  VERSION = "0.2.3"
 end
 
 # History
 # =======
+# 
+# Version 0.2.3
+# -------------
+# Bug fix: Identification of ids in rule would see a number preceded by a number 
+# as a valid id. So 51 would be seen as 1, and 34 as 4. Updated id pattern to 
+# only return numbers that are preceded by a letter.
 # 
 # Version 0.2.2
 # -------------
