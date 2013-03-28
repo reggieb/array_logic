@@ -39,25 +39,6 @@ and *blockers*:
 
 See test/array_logic/rule_test for more examples
 
-== Combinations that match
-
-Two methods allow you to determine sample combinations that match the current
-rule.  
-
-    rule = ArrayLogic::Rule.new 'a1 and a2'
-
-    rule.matching_combinations   -->  [[1,2]]
-    rule.blocking_combinations   -->  [[1],[2]]
-
-To limit the number of samples presented, both only use ids used within
-the rule. For the example above, an array that includes [1,2] would match, 
-and so would [1,2,3]. However, arrays that only contain 1 or 2 would not match 
-(for example [1,3])
-
-Run example.rb to see some more examples
-
-    ruby /lib/example.rb
-
 == Functions
 
 Version 0.2 introduces the concept of functions to ArrayLogic. The function
@@ -123,3 +104,35 @@ functions can be combined with other rules:
 
     rule = ArrayLogic::Rule.new '(sum(:id) == 12) and not a6'
     rule.match(answers)   --> false
+
+== Combinations that match
+
+Two methods allow you to determine sample combinations that match the current
+rule.  
+
+    rule = ArrayLogic::Rule.new 'a1 and a2'
+
+    rule.matching_combinations   -->  [[1,2]]
+    rule.blocking_combinations   -->  [[1],[2]]
+
+To limit the number of samples presented, both only use ids used within
+the rule. For the example above, an array that includes [1,2] would match, 
+and so would [1,2,3]. However, arrays that only contain 1 or 2 would not match 
+(for example [1,3])
+
+=== Combinations and functions
+
+Combinations are determined by analysing arrays of integers matching the ids
+found in the rule. This works for most rules but not those that contain functions.
+
+Therefore, when either matching_combinations, or blocking_combinations are called
+on a rule that contains a function, an exception is raised.
+
+    rule = ArrayLogic::Rule.new 'sum(:id) > 5'
+    rule.matching_combinations   -->  raises ArrayLogic::UnableToDetermineCombinationsError
+
+Thereby handling this issue is passed back to the host application
+
+Run example.rb to see some more examples
+
+    ruby /lib/example.rb

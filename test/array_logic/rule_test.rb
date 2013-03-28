@@ -448,6 +448,13 @@ module ArrayLogic
       assert_equal(1, @rule.matching_combinations.length, "should not identify combinations for both occurancies of each id")
     end
     
+    def test_matching_combinations_with_function
+      @rule.rule = 'sum(:id) == 1'
+      assert_raise UnableToDetermineCombinationsError do
+        @rule.matching_combinations
+      end
+    end
+    
     def test_blocking_combinations
       @rule.rule = 't1 or t2'
       assert_equal([], @rule.blocking_combinations)
@@ -465,6 +472,13 @@ module ArrayLogic
     def test_blocking_combinations_when_none_returned
       @rule.rule = 't1'
       assert_equal([], @rule.blocking_combinations)
+    end
+    
+    def test_blocking_combinations_with_function
+      @rule.rule = 'sum(:id) == 1 and t1'
+      assert_raise UnableToDetermineCombinationsError do
+        @rule.blocking_combinations
+      end
     end
     
     def test_assigning_rule_on_creation

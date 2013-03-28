@@ -65,6 +65,9 @@ module ArrayLogic
     end
     
     def combinations_of_identifiers_in_rule_that_pass(&test)
+      if function_pattern =~ rule
+        raise UnableToDetermineCombinationsError, "Unable to determine combinations for rules that include functions"
+      end
       if rule_valid?
         combinations = Array.new
         (1..id_count).each{|n| object_ids_used.combination(n).each{|c| combinations << c if test.call(c)}}

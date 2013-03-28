@@ -1,9 +1,15 @@
 module ArrayLogic
-  VERSION = "0.2.3"
+  VERSION = "0.2.4"
 end
 
 # History
 # =======
+# 
+# Version 0.2.4
+# -------------
+# Adds mechanism for handling issue of being unable to determine combinations
+# for rules with functions, without increasing complexity of combinations methods.
+# Choice of how to handle the issue can be made in the host app.
 # 
 # Version 0.2.3
 # -------------
